@@ -32,6 +32,7 @@ The following technologies were used for the development of the projects:
 - Centralized configuration server with data in Git repository;
 - The generation of Docker containers for microservices and databases.
 
+
 ## 📌 Class Diagram
 ![diagrama de classe](https://user-images.githubusercontent.com/44611131/144337612-89508e9e-fe99-48e1-aa46-9ce04cf6e408.PNG)
 
@@ -60,6 +61,11 @@ In POSTMAN you must add the following environment variables:
     postman.setEnvironmentVariable('token', json.access_token);
 }
 
+```
+
+On Windows, you will have to add the environment variables:
+```
+GITHUB_USER (Username GITHUB) and GITHUB_PASS (Password GITHUB)
 ```
 
 ## ⚠️ Prerequisite
