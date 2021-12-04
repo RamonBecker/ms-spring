@@ -16,27 +16,25 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
-
+	
 	@Value("${oauth.client.name}")
 	private String clientName;
 	
-
 	@Value("${oauth.client.secret}")
 	private String clientSecret;
 	
-	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-
+	
 	@Autowired
 	private JwtAccessTokenConverter accessTokenConverter;
-
+	
 	@Autowired
 	private JwtTokenStore tokenStore;
-	
+
 	@Autowired
 	private AuthenticationManager authenticationManager;
-	
+		
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
 		security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()");
@@ -44,20 +42,18 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		
 		clients.inMemory()
 		.withClient(clientName)
 		.secret(passwordEncoder.encode(clientSecret))
 		.scopes("read", "write")
 		.authorizedGrantTypes("password")
-		.accessTokenValiditySeconds(86400) // Token que dura 24 horas
-		;
-		
+		.accessTokenValiditySeconds(86400);
 	}
 
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore).accessTokenConverter(accessTokenConverter);
+		endpoints.authenticationManager(authenticationManager)
+		.tokenStore(tokenStore)
+		.accessTokenConverter(accessTokenConverter);
 	}
-
 }

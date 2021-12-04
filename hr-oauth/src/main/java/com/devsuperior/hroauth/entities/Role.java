@@ -1,33 +1,29 @@
 package com.devsuperior.hroauth.entities;
 
 import java.io.Serializable;
-import java.util.Objects;
 
+public class Role implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-
-public class Role implements Serializable{
-
-	private static final long serialVersionUID = 1L;	
-	private String id;
+	private Long id;
 	private String roleName;
-	
 	
 	public Role() {
 	}
 
-	public Role(String id, String roleName) {
+	public Role(Long id, String roleName) {
+		super();
 		this.id = id;
 		this.roleName = roleName;
 	}
 
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
-
 
 	public String getRoleName() {
 		return roleName;
@@ -39,7 +35,10 @@ public class Role implements Serializable{
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((roleName == null) ? 0 : roleName.hashCode());
+		return result;
 	}
 
 	@Override
@@ -51,10 +50,11 @@ public class Role implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Role other = (Role) obj;
-		return Objects.equals(id, other.id);
+		if (roleName == null) {
+			if (other.roleName != null)
+				return false;
+		} else if (!roleName.equals(other.roleName))
+			return false;
+		return true;
 	}
-	
-	
-	
-	
 }

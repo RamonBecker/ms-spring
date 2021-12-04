@@ -18,19 +18,18 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-
 @Configuration
 @EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Autowired
 	private JwtTokenStore tokenStore;
-
-	private static final String[] PUBLIC = {"/hr-oauth/oauth/token"};
 	
-	private static final String[] OPERATOR = {"/hr-worker/**"};
+	private static final String[] PUBLIC = { "/hr-oauth/oauth/token" };
 	
-	private static final String[] ADMIN = {"/hr-payroll/**", "/hr-user/**", "/actuator/**", "/hr-worker/actuator/**", "/hr-oauth/actuator/**"};
+	private static final String[] OPERATOR = { "/hr-worker/**" };
+	
+	private static final String[] ADMIN = { "/hr-payroll/**", "/hr-user/**", "/actuator/**", "/hr-worker/actuator/**", "/hr-oauth/actuator/**" };
 	
 	@Override
 	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
@@ -39,32 +38,33 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
+		
 		http.authorizeRequests()
-		.antMatchers(PUBLIC).permitAll() // Autorizando todas as rotas publicas  
-		.antMatchers(HttpMethod.GET, OPERATOR).hasAnyRole("OPERATOR", "ADMIN") // Autorizando somente acesso as rotas conforme o perfil do usuário
-		.antMatchers(ADMIN).hasRole("ADMIN") 
-		.anyRequest().authenticated() // Qualquer rota não definida, é exigido a autenticação do usuário
-		;
+		.antMatchers(PUBLIC).permitAll()
+		.antMatchers(HttpMethod.GET, OPERATOR).hasAnyRole("OPERATOR", "ADMIN")
+		.antMatchers(ADMIN).hasRole("ADMIN")
+		.anyRequest().authenticated();
 		
 		http.cors().configurationSource(corsConfigurationSource());
 	}
 	
 	@Bean
-	public CorsConfigurationSource corsConfigurationSource () {
+	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration corsConfig = new CorsConfiguration();
 		corsConfig.setAllowedOrigins(Arrays.asList("*"));
 		corsConfig.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "PATCH"));
 		corsConfig.setAllowCredentials(true);
 		corsConfig.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-
+		
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", corsConfig);
 		return source;
 	}
 	
 	@Bean
-	public FilterRegistrationBean<CorsFilter> corsFilter(){
-		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(corsConfigurationSource()));	
+	public FilterRegistrationBean<CorsFilter> corsFilter() {
+		FilterRegistrationBean<CorsFilter> bean 
+			= new FilterRegistrationBean<>(new CorsFilter(corsConfigurationSource()));
 		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
 		return bean;
 	}
